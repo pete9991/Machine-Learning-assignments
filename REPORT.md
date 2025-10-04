@@ -40,7 +40,38 @@ def fit(...):
 ### Theory
 
 #### Q1. Running Time of Mini-Batch Gradient Descent
+To find the running time of our metod we will split it in to its constituant parts, find their run time, and finally put it all together.
+the method we are looking at here is the Fit method, which has the following variales:
+n: training sampls
+d: dimensions of the training data
+E (epochs): the amount of epochs
+B: batch size
 
+the fit method can be broken down in to these parts:
+create d-array (it takes d time)
+the epoch loop (which runs E times)
+    permutation (runs n times)
+    shuffle x (takes nd time)
+    shuffle y (takes n time)
+    batch loop (runs n/d times)
+        x batch (takes Bd time)
+        y batch (takes B time)
+        cost-grad (takes nd+n+d time)
+        wehight update (takes constant time)
+    append result (takes same time as cost grad)
+
+putting it all together we get (d+E(n+nd+n+n/d*(Bd+B+nd+n+d+1)+nd+n+d)) which will need to e reduced
+(d+E(3n+2nd+d+n/d*(Bd+B+nd+n+d)))
+(d+E(n+nd+d+(n*(Bd+B+nd+n+d))/d))
+(d+E(n+nd+d+(n*(Bd+B+d))/d))
+(d+E(n+nd+d+nd+n+(nd/B)))
+(d+E(d+nd+n+(nd/B)))
+(d+E(nd+(nd/B)))
+(d+E(nd+nd)) worst case B=1 ergo (nd/B) = (nd/1) = nd
+(d+E(nd))
+(d+End)
+(End)
+the O time of our method is O(End)
 …
 
 #### Q2. Sanity Check (Cats vs. Dogs)
@@ -92,7 +123,21 @@ def fit(...):
 ### Theory
 
 #### Q1. Running Time of Softmax Implementation
+here we'll be doing the same thig as in question 1, just on the cost grad method using soft max
+n: training sampls
+d: dimensions of the training data
+k: classes
 
+one-in-k-notation (takes nk time)
+soft_max (takes nd-time)
+np.arrange (takes n time)
+np.mean (takes n time)
+grad calculations (takes (dnk+nk+dk) -> dnk time)
+
+putting it all together we get O(nk+nd+n+n+dnk) which we will then reduce
+nk+nd+n+dnk
+dnk (since nk, nd and n are all part of dnk we can elminate them)
+the time for cost grad is O(dnk)
 …
 
 ---
