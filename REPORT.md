@@ -1,9 +1,10 @@
-# Report
+# Handin 1
 
-**Name(s):**
-**Student ID(s):**
-
----
+| Name                 | Student ID |
+|----------------------|------------|
+| Daniel Naddaf        | 202106189  |
+| Behzad Haidari       | 202006894  |
+| Peter Ernst Lüdeking | 202307043  |
 
 ## PART I: Logistic Regression
 
@@ -11,78 +12,87 @@
 
 #### Summary and Results
 
-* **In-sample accuracy:** …
-* **Test accuracy:** …
+- **In-sample accuracy:** 0.9763
+- **Test accuracy:** 0.9623
 
-**Generated Plot:**
+**Generated Plot:**  
 ![Logistic Regression Plot](logistic_plot.png)
 
-*Comment (2 lines max):*
-…
+The plot demonstrates a clear decrease in the in-sample negative log likelihood cost over the training epochs, indicating effective model learning.
 
-*Notes (if anything did not work):*
-…
+All tests passed successfully.
 
 #### Actual Code
 
 ```python
 # cost_grad
-def cost_grad(...):
-    ...
+def cost_grad(self, X, y, w):
+    cost = 0
+    grad = np.zeros(w.shape)
+    cost = np.mean(np.log(1 + np.exp(-y * (X @ w))))
+    grad = -np.mean((y * logistic(-y * (X @ w)))[:, np.newaxis] * X, axis=0)
+    assert grad.shape == w.shape
+    return cost, grad
 
 # fit
-def fit(...):
-    ...
+def fit(self, X, y, w=None, lr=0.1, batch_size=16, epochs=10):
+    if w is None: w = np.zeros(X.shape[1])
+    history = []        
+    for _ in range(epochs):
+        perm = np.random.permutation(X.shape[0])
+        X_shuffled = X[perm]
+        y_shuffled = y[perm]
+        for i in range(0, X.shape[0], batch_size):
+            X_batch = X_shuffled[i:i+batch_size]
+            y_batch = y_shuffled[i:i+batch_size]
+            cost, grad = self.cost_grad(X_batch, y_batch, w)
+            w -= lr * grad
+        history.append(self.cost_grad(X, y, w)[0])
+    self.w = w
+    self.history = history
 ```
-
----
 
 ### Theory
 
 #### Q1. Running Time of Mini-Batch Gradient Descent
-To find the running time of our metod we will split it in to its constituant parts, find their run time, and finally put it all together.
-the method we are looking at here is the Fit method, which has the following variales:
-n: training sampls
-d: dimensions of the training data
-E (epochs): the amount of epochs
-B: batch size
 
-the fit method can be broken down in to these parts:
-create d-array (it takes d time)
-the epoch loop (which runs E times)
-    permutation (runs n times)
-    shuffle x (takes nd time)
-    shuffle y (takes n time)
-    batch loop (runs n/d times)
-        x batch (takes Bd time)
-        y batch (takes B time)
-        cost-grad (takes nd+n+d time)
-        wehight update (takes constant time)
-    append result (takes same time as cost grad)
+To analyze the running time of the `fit` method, we break it down into its components:
 
-putting it all together we get (d+E(n+nd+n+n/d*(Bd+B+nd+n+d+1)+nd+n+d)) which will need to e reduced
-(d+E(3n+2nd+d+n/d*(Bd+B+nd+n+d)))
-(d+E(n+nd+d+(n*(Bd+B+nd+n+d))/d))
-(d+E(n+nd+d+(n*(Bd+B+d))/d))
-(d+E(n+nd+d+nd+n+(nd/B)))
-(d+E(d+nd+n+(nd/B)))
-(d+E(nd+(nd/B)))
-(d+E(nd+nd)) worst case B=1 ergo (nd/B) = (nd/1) = nd
-(d+E(nd))
-(d+End)
-(End)
-the O time of our method is O(End)
-…
+- **n:** Number of training samples  
+- **d:** Number of features  
+- **E:** Number of epochs  
+- **B:** Batch size
+
+**Breakdown:**
+
+- Create d-array: O(d)
+- Epoch loop: O(E)
+    - Permutation: O(n)
+    - Shuffle X: O(nd)
+    - Shuffle y: O(n)
+    - Batch loop: O(n/B)
+        - X batch: O(Bd)
+        - y batch: O(B)
+        - cost_grad: O(nd + n + d)
+        - Weight update: O(1)
+    - Append result: O(cost_grad)
+
+**Total running time:**
+
+After simplification, the overall time complexity is:
+
+```
+O(E * n * d)
+```
 
 #### Q2. Sanity Check (Cats vs. Dogs)
 
-…
+...
 
 #### Q3. Linearly Separable Data
 
-…
+...
 
----
 
 ## PART II: Softmax Regression
 
@@ -90,59 +100,72 @@ the O time of our method is O(End)
 
 #### Summary and Results
 
-* **Wine data set – In-sample accuracy:** …
+- **Wine data set – In-sample accuracy:** 1.0
+- **Wine data set – Test accuracy:** 0.978
+- **MNIST data set – In-sample accuracy:** 0.9218
+- **MNIST data set – Test accuracy:** 0.9216
 
-* **Wine data set – Test accuracy:** …
-
-* **MNIST data set – In-sample accuracy:** …
-
-* **MNIST data set – Test accuracy:** …
-
-**Generated Plots:**
-![Softmax Wine Plot](softmax_wine.png)
-![Softmax Digits Plot](softmax_digits.png)
+**Generated Plots:**  
+![Softmax Wine Plot](softmax_wine.png)  
+![Softmax Digits Plot](softmax_digits.png)  
 ![Softmax Digits Visualization](softmax_visualization.png)
 
-*Comment (2 lines max):*
-…
+The cost plots for both wine and MNIST datasets show a rapid decrease in the negative log likelihood during early epochs, indicating successful learning. The MNIST weight visualization clearly shows distinct patterns resembling each digit, demonstrating the classifier's ability to differentiate them.
 
 #### Actual Code
 
 ```python
 # cost_grad
-def cost_grad(...):
-    ...
+def cost_grad(self, X, y, W):
+    cost = np.nan
+    grad = np.zeros(W.shape)*np.nan
+    Yk = one_in_k_encoding(y, self.num_classes)
+    softmax_probs = softmax(X @ W)
+    correct_class_probs = softmax_probs[np.arange(X.shape[0]), y]
+    cost = -np.mean(np.log(correct_class_probs))
+    grad = X.T @ (softmax_probs - Yk) / X.shape[0]
+    return cost, grad
 
 # fit
-def fit(...):
-    ...
+def fit(self, X, Y, W=None, lr=0.01, epochs=10, batch_size=16):
+    if W is None: W = np.zeros((X.shape, self.num_classes))
+    history = []
+    for _ in range(epochs):
+        perm = np.random.permutation(X.shape[0])
+        X_shuffled = X[perm]
+        y_shuffled = Y[perm]
+        for i in range(0, X.shape[0], batch_size):
+            X_batch = X_shuffled[i:i+batch_size]
+            y_batch = y_shuffled[i:i+batch_size]
+            cost, grad = self.cost_grad(X_batch, y_batch, W)
+            W -= lr * grad
+        history.append(self.cost_grad(X, Y, W)[0])
+    self.W = W
+    self.history = history
 ```
-
----
 
 ### Theory
 
 #### Q1. Running Time of Softmax Implementation
-here we'll be doing the same thig as in question 1, just on the cost grad method using soft max
-n: training sampls
-d: dimensions of the training data
-k: classes
 
-one-in-k-notation (takes nk time)
-soft_max (takes nd-time)
-np.arrange (takes n time)
-np.mean (takes n time)
-grad calculations (takes (dnk+nk+dk) -> dnk time)
+Let:
 
-putting it all together we get O(nk+nd+n+n+dnk) which we will then reduce
-nk+nd+n+dnk
-dnk (since nk, nd and n are all part of dnk we can elminate them)
-the time for cost grad is O(dnk)
-…
+- **n:** Number of training samples  
+- **d:** Number of features  
+- **k:** Number of classes
 
----
+**Breakdown:**
 
-# Appendix (Optional)
+- One-in-k encoding: O(nk)
+- Softmax: O(nd)
+- np.arange: O(n)
+- np.mean: O(n)
+- Gradient calculation: O(dnk)
 
-* Extra plots
-* Additional tests
+**Total running time:**
+
+After simplification, the time complexity for `cost_grad` is:
+
+```
+O(dnk)
+```
