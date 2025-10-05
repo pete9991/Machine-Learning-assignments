@@ -92,9 +92,9 @@ Mathematically, we can let P denote a random permutation matrix. Then we have $$
 
 #### Q3. Linearly Separable Data
 
-Given the data is linearly separable and logistic regression is implemented with gradient descent, then every time gradient descent is run, it will reduce the loss. In other words:
-$$ log(1+e^{(-c\cdot \text{a positive number})}) \rightarrow 0 $$ when $$ c \rightarrow \infty $$
-in other words, by letting $||w||$ converge to $\infty$ then we can minimize the loss as much as possible. There is therefor no finite w that minimizes. Infimum is 0, but achieved when the limit $||w|| \rightarrow 0 $
+Given the data is linearly separable and logistic regression is implemented with gradient descent, then every time gradient descent is run, it will reduce the loss. In other words: if u separates the data, then for $w = cu$:
+$$ L(w) = \sum_i log(1+e^{(-c y_i u^T x_i)}) \rightarrow 0 $$ when $$ c \rightarrow \infty $$
+in other words, gradient descent drives $||w||$ to converge to $\infty$ and the loss approaches 0 only in the limit. There is therefore no finite w that minimizes. Infimum is 0, but achieved only in the limit $||w|| \rightarrow \infty $
 
 ## PART II: Softmax Regression
 
