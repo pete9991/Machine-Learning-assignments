@@ -88,13 +88,13 @@ O(E * n * d)
 #### Q2. Sanity Check (Cats vs. Dogs)
 
 If we apply the same fixed permutation to all the images, it reorders the feature indices for every element. If we also use the same reordering for the weights to correspond to the features, then the decision function is mathematically unchanged, given it is the same permutation at test. The performance will therefore be the same.
-Mathematically, we can let P denote a random permutation matrix. Then we have $$ (Pw)^T (Px) = w^T(P^TP)x = w^Tx $$ since $P^TP = I$.
+Mathematically, we can let P denote a random permutation matrix. Then we have $$(Pw)^T (Px) = w^T(P^TP)x = w^Tx$$ since $P^TP = I$.
 
 #### Q3. Linearly Separable Data
 
 Given the data is linearly separable and logistic regression is implemented with gradient descent, then every time gradient descent is run, it will reduce the loss. In other words: if u separates the data, then for $w = cu$:
-$$ L(w) = \sum_i log(1+e^{(-c y_i u^T x_i)}) \rightarrow 0 $$ when $$ c \rightarrow \infty $$
-in other words, gradient descent drives $||w||$ to converge to $\infty$ and the loss approaches 0 only in the limit. There is therefore no finite w that minimizes. Infimum is 0, but achieved only in the limit $||w|| \rightarrow \infty $
+$$L(w) = \sum_i \log(1+e^{(-c y_i u^T x_i)}) \rightarrow 0$$ when $$c \rightarrow \infty$$
+in other words, gradient descent drives $||w||$ to converge to $\infty$ and the loss approaches 0 only in the limit. There is therefore no finite w that minimizes. Infimum is 0, but achieved only in the limit $||w|| \rightarrow \infty$
 
 ## PART II: Softmax Regression
 
