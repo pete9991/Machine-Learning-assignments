@@ -101,4 +101,4 @@ This makes sense because the model learns features that are actually relevant fo
 
 ## Conclusion
 
-Increasing samples consistently improves accuracy, while augmentation helps most in low-sample scenarioes. Mixup is generally better than collage, while pretraining and finetuning on the same dataset outperform cross-dataset transfer due to better feature alignment.
+Increasing samples consistently improves accuracy, while augmentation helps most in low-sample scenarios. Mixup is generally better than collage, while pretraining and finetuning on the same dataset outperform cross-dataset transfer due to better feature alignment.
