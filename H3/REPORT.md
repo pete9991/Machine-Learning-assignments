@@ -42,7 +42,7 @@ You are requested to provide (short) answers to the following questions to ensur
 ![MNIST to MNIST](./plots/mnist_mnist.png)
 
 **Observations:**
-- *Accuracy vs. samples per class:* The accuracy increases with the number of samples per class, no matter if we are uisng augmentations or not.
+- *Accuracy vs. samples per class:* The accuracy increases with the number of samples per class, no matter if we are using augmentations or not.
 - *Effect of augmentations:* Both types of augmentations increases the accuracy.
 
 ---
@@ -53,7 +53,7 @@ You are requested to provide (short) answers to the following questions to ensur
 
 **Observations:**
 - *Accuracy vs. samples per class:* The accuracy increases with the number of samples per class, but the curves differ for augmentations vs no augmentation. The augmentation curves increase slightly at a much lower pace, while the case of no augmentation starts with a very low accuracy and blows up after 16 samples per class. For some reason, the augmented datasets end up with a slightly reduced accuracy at 64 samples per class.
-- *Effect of augmentations:* Using augmentation immediatly gives us a higher accuracy, which is stable longer. While the non-augmented dataset starts low and rises as more samples are introduced. One takeaway from this, is that one could get a much better accuracy with a small dataset, by introducing augmented samples.
+- *Effect of augmentations:* Using augmentation immediately gives us a higher accuracy, which is stable longer. While the non-augmented dataset starts low and rises as more samples are introduced. One takeaway from this, is that one could get a much better accuracy with a small dataset, by introducing augmented samples.
 
 ---
 
@@ -98,3 +98,7 @@ Yes, sticking to the same dataset gives better results.
 If you compare the last plot (EMNIST to EMNIST) with the second plot (MNIST to EMNIST), you can see the accuracy is higher when we pre-train and fine-tune on the same dataset.
 
 This makes sense because the model learns features that are actually relevant for the specific task. If we switch datasets (like learning on numbers and then testing on letters), the model has to re-adjust more, and the features it learned might not fit as good.
+
+## Conclusion
+
+Increasing samples consistently improves accuracy, while augmentation helps most in low-sample scenarioes. Mixup is generally better than collage, while pretraining and finetuning on the same dataset outperform cross-dataset transfer due to better feature alignment.
