@@ -37,6 +37,11 @@ def cross_entropy(pred, target):
         raise ValueError('X-Entropy loss requires torch tensors for input')
 
     ### YOUR CODE HERE
+    # pred already contains ln(p_i) values
+    # target contains y_i values
+    # Element-wise multiply and sum across classes, then we make it negative and take mean
+    log_likelihoods = torch.sum(target * pred, dim=-1)
+    mean_log_likelihoods = -torch.mean(log_likelihoods)
     ### END CODE
 
     return mean_log_likelihoods

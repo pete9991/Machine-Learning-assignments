@@ -17,6 +17,18 @@ def collage(batch_i, batch_j):
     interpolation = None
     
     ### YOUR CODE HERE
+    half_size = im_size // 2
+    
+    # Create a copy of batch_i to start with
+    result = np.copy(batch_i)
+    
+    # Top-left quarter from batch_j
+    result[:, :half_size, :half_size] = batch_j[:, :half_size, :half_size]
+    
+    # Bottom-right quarter from batch_j
+    result[:, half_size:, half_size:] = batch_j[:, half_size:, half_size:]
+        
+    interpolation = 0.5
     ### END CODE
 
     return result, interpolation
@@ -32,6 +44,7 @@ def mixup(batch_i, batch_j, alpha=0.3):
     result = None
 
     ### YOUR CODE HERE
+    result = interpolation * batch_i + (1 - interpolation) * batch_j
     ### END CODE
 
     return result, interpolation
